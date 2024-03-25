@@ -304,9 +304,9 @@ class Llama(LlamaPreTrainedModel):
                 Note that we are not using top-k sampling/nucleus sampling in this procedure.
                 '''
                 logits = logits/temperature
-                logits = torch.softmax(logits,dim=1)
+                logits = torch.softmax(logits,dim= -1)
 
-                idx_next = logits.sample(dim=1)
+                idx_next = logits.sample(dim= -1)
             # append sampled index to the running sequence and continue
             idx = torch.cat((idx, idx_next), dim=1)
 
