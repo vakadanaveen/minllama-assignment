@@ -201,7 +201,17 @@ class LlamaLayer(nn.Module):
            output of the feed-forward network
         '''
         # todo
-        raise NotImplementedError
+        # raise NotImplementedError
+        layer_norm_output1 = self.attention_norm(x)
+        self_attention_output = self.attention(layer_norm_output)
+        residual_connection_output1 = x + self_attention_output
+        layer_norm_output2 = self.ffn_norm(residual_connection_output)
+        ff_output = self.feed_forward(layer_norm_output2)
+        residual_connection_output2 = self_attention_output + ff_output
+        return residual_connection_output2
+
+
+
 
 class Llama(LlamaPreTrainedModel):
     def __init__(self, config: LlamaConfig):
