@@ -45,7 +45,7 @@ class RMSNorm(torch.nn.Module):
         """
         # todo
         #raise NotImplementedError
-        return x/nn.sqrt((nn.norm(x)+self.eps)/x.shape[1])
+        return x/torch.sqrt((torch.norm(x)+self.eps)/x.size(1))
 
     def forward(self, x):
         """
@@ -95,7 +95,10 @@ class Attention(nn.Module):
         attention matrix before applying it to the value tensor.
         '''
         # todo
-        raise NotImplementedError
+        #raise NotImplementedError
+        n_batches = query.size(0)
+        attention_before_dropout = nn.softmax(torch.matmul(query,key.transpose(-1,-2))/torch.sqrt(query.size(-1)))
+        return self.attention_dropout(attention_before_dropout)*value
 
     def forward(
         self,
