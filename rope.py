@@ -68,11 +68,20 @@ def apply_rotary_emb(
     # key_real, and key_imag.
 
     #raise NotImplementedError
-    cos = torch.arange(max_seq_len, device=device).float()
-    sin = torch.arange(max_seq_len, device=device).float()
-    cos = torch.cos(cos / theta)
-    sin = torch.sin(sin / theta)
-
+    def calculate_rotary_embedding_angles(seq_len, head_dim, device):
+        # Create a range vector for the dimensions
+        dim_range = torch.arange(head_dim // 2, device=device)
+        # Calculate the angles theta_i for each dimension
+        theta_i = 1000 ** (-2 * dim_range / head_dim).float()
+        # Create a range vector for the positions
+        position = torch.arange(seq_len, device=device).float()
+        # Multiply the position by theta_i to get the position-specific angles
+        angles = position[:, None] * theta_i[None, :]
+        # Compute the sine and cosine values for these angles
+        sin_values = torch.sin(angles)
+        cos_values = torch.cos(angles)
+        return cos_values, sin_values
+    cos,sin = calculate_rotary_embedding_angles(seqlen,query.shape[-2],device)
     query_out_real = cos * query_real - sin * query_imag
     query_out_imag = sin * query_real + cos * query_imag
     key_out_real = cos * key_real - sin * key_imag
