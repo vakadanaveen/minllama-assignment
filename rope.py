@@ -1,6 +1,5 @@
 from typing import Tuple
 import torch
-import ipdb
 
 def reshape_for_broadcast(freqs_cis: torch.Tensor, x: torch.Tensor):
     """
@@ -55,12 +54,10 @@ def apply_rotary_emb(
     #
     # Please refer to slide 22 in https://phontron.com/class/anlp2024/assets/slides/anlp-05-transformers.pdf
     # and Section 3 in https://arxiv.org/abs/2104.09864.
-    print(query)
+
     # reshape xq and xk to match the complex representation
     query_real, query_imag = query.float().reshape(query.shape[:-1] + (-1, 2)).unbind(-1)
     key_real, key_imag = key.float().reshape(key.shape[:-1] + (-1, 2)).unbind(-1)
-    print(query_real)
-    print(query_imag)
     # This separates each query/key vector into its odd and even indices (assuming *one-indexing*).
     # query_real contains q_1, q_3, q_5, ... and query_imag contains q_2, q_4, q_6, ...
 
@@ -70,31 +67,9 @@ def apply_rotary_emb(
     # Then, combine these trigonometric values with the tensors query_real, query_imag,
     # key_real, and key_imag.
 
-    #raise NotImplementedError
-    def calculate_rotary_embedding_angles(seq_len, head_dim, device):
-        # Create a range vector for the dimensions
-        dim_range = torch.arange(head_dim, device=device)
-        # Calculate the angles theta_i for each dimension
-        theta_i = theta ** (-2 * dim_range / head_dim).float()
-        # Create a range vector for the positions
-        position = torch.arange(seq_len, device=device).float()
-        # Multiply the position by theta_i to get the position-specific angles
-        angles = position[:, None] * theta_i[None, :]
-        # Compute the sine and cosine values for these angles
-        sin_values = torch.sin(angles)
-        cos_values = torch.cos(angles)
-        return cos_values, sin_values
-    cos,sin = calculate_rotary_embedding_angles(seqlen,query_real.shape[-2],device)
-    query_out_real = cos * query_real - sin * query_imag
-    query_out_imag = sin * query_real + cos * query_imag
-    key_out_real = cos * key_real - sin * key_imag
-    key_out_imag = sin * key_real + cos * key_imag
+    raise NotImplementedError
 
-    print(query_out_real)
-    print(query_out_imag)
-    # Combine the real and imaginary parts back into the complex form
-    query_out = torch.stack((query_out_real, query_out_imag), -1).flatten(-2)
-    key_out = torch.stack((key_out_real, key_out_imag), -1).flatten(-2)
-    print(query_out_real)
-    print(query_out_imag)
+    query_out = None
+    key_out = None
+    # Return the rotary position embeddings for the query and key tensors
     return query_out, key_out
