@@ -87,7 +87,9 @@ def apply_rotary_emb(
     key_out_real = cos * key_real - sin * key_imag
     key_out_imag = sin * key_real + cos * key_imag
 
-
+    print(query_out_real)
+    print(query_out_imag)
+    print('done')
 
     query_out = torch.stack((query_out_real, query_out_imag), dim=-1).reshape(query.shape)
     key_out = torch.stack((key_out_real, key_out_imag), dim=-1).reshape(key.shape)
