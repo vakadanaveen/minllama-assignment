@@ -70,7 +70,7 @@ def apply_rotary_emb(
     #raise NotImplementedError
     def calculate_rotary_embedding_angles(seq_len, head_dim, device):
         # Create a range vector for the dimensions
-        dim_range = torch.arange(head_dim // 2, device=device)
+        dim_range = torch.arange(head_dim, device=device)
         # Calculate the angles theta_i for each dimension
         theta_i = theta ** (-2 * dim_range / head_dim).float()
         # Create a range vector for the positions
