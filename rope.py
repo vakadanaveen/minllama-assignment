@@ -81,14 +81,14 @@ def apply_rotary_emb(
         sin_values = torch.sin(angles)
         cos_values = torch.cos(angles)
         return cos_values, sin_values
-    cos,sin = calculate_rotary_embedding_angles(seqlen,query.shape[-2],device)
+    cos,sin = calculate_rotary_embedding_angles(seqlen,query_real.shape[-2],device)
     query_out_real = cos * query_real - sin * query_imag
     query_out_imag = sin * query_real + cos * query_imag
     key_out_real = cos * key_real - sin * key_imag
     key_out_imag = sin * key_real + cos * key_imag
 
 
-    query_out = torch.stack((query_out_real, query_out_imag), dim=-1).reshape(query.shape)
-    key_out = torch.stack((key_out_real, key_out_imag), dim=-1).reshape(key.shape)
+    query_out = torch.stack((query_real, query_imag), dim=-1).reshape(query.shape)
+    key_out = torch.stack((key_out_real, key_out_imag), dim=-1).reshape(key.shape)  
     # Return the rotary position embeddings for the query and key tensors
     return query_out, key_out
