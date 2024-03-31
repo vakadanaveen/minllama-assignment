@@ -55,7 +55,7 @@ def apply_rotary_emb(
     #
     # Please refer to slide 22 in https://phontron.com/class/anlp2024/assets/slides/anlp-05-transformers.pdf
     # and Section 3 in https://arxiv.org/abs/2104.09864.
-
+    print(query)
     # reshape xq and xk to match the complex representation
     query_real, query_imag = query.float().reshape(query.shape[:-1] + (-1, 2)).unbind(-1)
     key_real, key_imag = key.float().reshape(key.shape[:-1] + (-1, 2)).unbind(-1)
@@ -95,5 +95,6 @@ def apply_rotary_emb(
     # Combine the real and imaginary parts back into the complex form
     query_out = torch.stack((query_out_real, query_out_imag), -1).flatten(-2)
     key_out = torch.stack((key_out_real, key_out_imag), -1).flatten(-2)
-
+    print(query_out_real)
+    print(query_out_imag)
     return query_out, key_out
