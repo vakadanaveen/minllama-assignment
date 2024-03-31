@@ -88,11 +88,16 @@ def apply_rotary_emb(
     key_out_imag = sin * key_real + cos * key_imag
 
 
+
+    # Assuming query_real and query_imag are the real and imaginary parts obtained from the query tensor
+    # And you want to interleave them back into a single tensor named query_out
+
+    # Correct combination code
     query_out = torch.cat((query_real.unsqueeze(-1), query_imag.unsqueeze(-1)), dim=-1)
-    query_out = query_out.reshape(-1, 2).transpose(0, 1).reshape(query.shape)
+    query_out = query_out.flatten(start_dim=0, end_dim=-3).view(query.shape)
 
     # Do the same for key_real and key_imag into key_out
     key_out = torch.cat((key_real.unsqueeze(-1), key_imag.unsqueeze(-1)), dim=-1)
-    key_out = key_out.reshape(-1, 2).transpose(0, 1).reshape(key.shape) 
-    # Return the rotary position embeddings for the query and key tensors
+    key_out = key_out.flatten(start_dim=0, end_dim=-3).view(key.shape)
+
     return query_out, key_out
