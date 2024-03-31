@@ -95,4 +95,4 @@ def apply_rotary_emb(
     query_out = torch.stack((query_out_real, query_out_imag), -1).flatten(-2)
     key_out = torch.stack((key_out_real, key_out_imag), -1).flatten(-2)
 
-    return query_out_interleaved, key_out_interleaved
+    return query_out, key_out
