@@ -72,7 +72,7 @@ def apply_rotary_emb(
         # Create a range vector for the dimensions
         dim_range = torch.arange(head_dim // 2, device=device)
         # Calculate the angles theta_i for each dimension
-        theta_i = 1000 ** (-2 * dim_range / head_dim//2).float()
+        theta_i = 1000 ** (-2 * dim_range / (head_dim//2)).float()
         # Create a range vector for the positions
         position = torch.arange(seq_len, device=device).float()
         # Multiply the position by theta_i to get the position-specific angles
