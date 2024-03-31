@@ -91,14 +91,8 @@ def apply_rotary_emb(
     print(query_out_imag)
     print('done')
 
-    query_out = torch.stack((query_out_real, query_out_imag), dim=-1).reshape(query.shape)
-    key_out = torch.stack((key_out_real, key_out_imag), dim=-1).reshape(key.shape)
-
-    query_out_real, query_out_imag = query_out.chunk(2, dim=-2)
-    key_out_real, key_out_imag = key_out.chunk(2, dim=-2)
-
-    # Interleave the chunks and reshape
-    query_out_interleaved = torch.cat((query_out_real, query_out_imag), dim=-1).reshape(query.shape)
-    key_out_interleaved = torch.cat((key_out_real, key_out_imag), dim=-1).reshape(key.shape)
+    # Combine the real and imaginary parts back into the complex form
+    query_out = torch.stack((query_out_real, query_out_imag), -1).flatten(-2)
+    key_out = torch.stack((key_out_real, key_out_imag), -1).flatten(-2)
 
     return query_out_interleaved, key_out_interleaved
