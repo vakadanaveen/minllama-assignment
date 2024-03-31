@@ -89,13 +89,7 @@ def apply_rotary_emb(
 
 
 
-    # Correct combination code
-    query_out = torch.empty_like(torch.cat((query_real, query_imag), dim=-1))
-    query_out[..., ::2] = query_real
-    query_out[..., 1::2] = query_imag
-
-    # Do the same for key_real and key_imag into key_out
-    key_out = torch.empty_like(torch.cat((key_real, key_imag), dim=-1))
-    key_out[..., ::2] = key_real
+    query_out = torch.stack((query_real, query_imag), dim=-1).reshape(query.shape)
+    key_out = torch.stack((key_real, key_imag), dim=-1).reshape(key.shape)
 
     return query_out, key_out
