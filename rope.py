@@ -1,5 +1,6 @@
 from typing import Tuple
 import torch
+import ipdb
 
 def reshape_for_broadcast(freqs_cis: torch.Tensor, x: torch.Tensor):
     """
@@ -56,6 +57,7 @@ def apply_rotary_emb(
     # and Section 3 in https://arxiv.org/abs/2104.09864.
 
     # reshape xq and xk to match the complex representation
+    ipdb.set_trace()
     query_real, query_imag = query.float().reshape(query.shape[:-1] + (-1, 2)).unbind(-1)
     key_real, key_imag = key.float().reshape(key.shape[:-1] + (-1, 2)).unbind(-1)
     # This separates each query/key vector into its odd and even indices (assuming *one-indexing*).
@@ -87,12 +89,9 @@ def apply_rotary_emb(
     key_out_real = cos * key_real - sin * key_imag
     key_out_imag = sin * key_real + cos * key_imag
 
-    print(query_out_real)
-    print(query_out_imag)
-    print('done')
 
     # Combine the real and imaginary parts back into the complex form
-    query_out = torch.stack((query_out_real, query_out_imag), -1).flatten(-1)
-    key_out = torch.stack((key_out_real, key_out_imag), -1).flatten(-1)
+    query_out = torch.stack((query_out_real, query_out_imag), -1).flatten(-2)
+    key_out = torch.stack((key_out_real, key_out_imag), -1).flatten(-2)
 
     return query_out, key_out
