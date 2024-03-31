@@ -92,7 +92,7 @@ def apply_rotary_emb(
     print('done')
 
     # Combine the real and imaginary parts back into the complex form
-    query_out = torch.stack((query_out_real, query_out_imag), -2).flatten(-2)
-    key_out = torch.stack((key_out_real, key_out_imag), -2).flatten(-2)
+    query_out = torch.stack((query_out_real, query_out_imag), -1).flatten(-1)
+    key_out = torch.stack((key_out_real, key_out_imag), -1).flatten(-1)
 
     return query_out, key_out
