@@ -89,15 +89,13 @@ def apply_rotary_emb(
 
 
 
-    # Assuming query_real and query_imag are the real and imaginary parts obtained from the query tensor
-    # And you want to interleave them back into a single tensor named query_out
-
     # Correct combination code
-    query_out = torch.cat((query_real.unsqueeze(-1), query_imag.unsqueeze(-1)), dim=-1)
-    query_out = query_out.flatten(start_dim=0, end_dim=-3).view(query.shape)
+    query_out = torch.empty_like(torch.cat((query_real, query_imag), dim=-1))
+    query_out[..., ::2] = query_real
+    query_out[..., 1::2] = query_imag
 
     # Do the same for key_real and key_imag into key_out
-    key_out = torch.cat((key_real.unsqueeze(-1), key_imag.unsqueeze(-1)), dim=-1)
-    key_out = key_out.flatten(start_dim=0, end_dim=-3).view(key.shape)
+    key_out = torch.empty_like(torch.cat((key_real, key_imag), dim=-1))
+    key_out[..., ::2] = key_real
 
     return query_out, key_out
